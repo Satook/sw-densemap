@@ -2,18 +2,21 @@ import XCTest
 @testable import densemap
 
 final class densemapTests: XCTestCase {
-  func createMap() {
-    let map = DenseMap()
+  func testCreateMap() {
+    let map = DenseMap<Int, String>()
 
     XCTAssertEqual(map.count, 0)
     XCTAssertGreaterThan(map.capacity, 0)
   }
 
-  func addItem() {
+  func testAddItem() {
+    var map = DenseMap<Int, String>()
 
+    map[1] = "Testing"
   }
 
   static var allTests = [
-    ("createMap", createMap),
+    ("testCreateMap", testCreateMap),
+    ("testAddItem", testAddItem),
   ]
 }
