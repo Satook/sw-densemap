@@ -6,13 +6,16 @@ final class densemapTests: XCTestCase {
     let map = DenseMap<Int, String>()
 
     XCTAssertEqual(map.count, 0)
-    XCTAssertGreaterThan(map.capacity, 0)
+    XCTAssertGreaterThan(map.capacity, -1)
   }
 
   func testAddItem() {
     var map = DenseMap<Int, String>()
 
     map[1] = "Testing"
+
+    XCTAssertEqual(map.count, 1)
+    XCTAssertEqual(map[1], "Testing")
   }
 
   static var allTests = [
