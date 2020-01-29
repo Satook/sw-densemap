@@ -9,6 +9,8 @@ public struct DenseMap<K: Comparable, V> {
   var keys = Keys()
   var values = Values()
 
+  public init() {}
+
   public var capacity: Int {
     return keys.capacity
   }
