@@ -1,7 +1,10 @@
 
-public struct DenseMap<Key: Comparable, Value> {
-  typealias Keys = Array<Key>
-  typealias Values = Array<Value>
+public struct DenseMap<K: Comparable, V> {
+  public typealias Keys = Array<K>
+  typealias Values = Array<V>
+  public typealias Index = Keys.Index
+  public typealias Key = K
+  public typealias Value = V
 
   var keys = Keys()
   var values = Values()
@@ -31,6 +34,15 @@ public struct DenseMap<Key: Comparable, Value> {
       } else {
         removeValue(forKey: k)
       }
+    }
+  }
+
+  public func index(forKey k: Key) -> Index? {
+    switch (keys.binarySearch(forElement: k)) {
+    case .hit(let idx):
+      return idx
+    case .miss:
+      return nil
     }
   }
 
