@@ -19,6 +19,39 @@ public struct DenseMap<K: Comparable, V> {
     return keys.count
   }
 
+  public var startIndex: Index {
+    get {
+      keys.startIndex
+    }
+  }
+
+  public var endIndex: Index {
+    get {
+      keys.endIndex
+    }
+  }
+
+  public func index(after idx: Index) -> Index {
+    keys.index(after: idx)
+  }
+
+  public func index(forKey k: Key) -> Index? {
+    switch (keys.binarySearch(forElement: k)) {
+    case .hit(let idx):
+      return idx
+    case .miss:
+      return nil
+    }
+  }
+
+  public func distance(from: Index, to: Index) -> Int {
+    keys.distance(from: from, to: to)
+  }
+
+  public subscript(idx: Index) -> (key: Key, value: Value) {
+    return (key: keys[idx], value: values[idx])
+  }
+
   public subscript(k: Key) -> Value? {
     get {
       let searchResult = keys.binarySearch(forElement: k)
@@ -36,15 +69,6 @@ public struct DenseMap<K: Comparable, V> {
       } else {
         removeValue(forKey: k)
       }
-    }
-  }
-
-  public func index(forKey k: Key) -> Index? {
-    switch (keys.binarySearch(forElement: k)) {
-    case .hit(let idx):
-      return idx
-    case .miss:
-      return nil
     }
   }
 

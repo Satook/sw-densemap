@@ -2,24 +2,56 @@ import XCTest
 @testable import densemap
 
 final class densemapTests: XCTestCase {
-  func testCreateMap() {
-    let map = DenseMap<Int, String>()
+  var map = DenseMap<UInt16, String>()
 
+  func testCreateMap() {
     XCTAssertEqual(map.count, 0)
     XCTAssertGreaterThan(map.capacity, -1)
   }
 
   func testAddItem() {
-    var map = DenseMap<Int, String>()
-
     map[1] = "Testing"
 
     XCTAssertEqual(map.count, 1)
     XCTAssertEqual(map[1], "Testing")
   }
 
+  func testOrdering() {
+    map[1] = "one"
+    map[12] = "twelve"
+    map[5] = "five"
+    map[13] = "thirteen"
+
+    var got = [String]()
+    var idx = map.startIndex
+    while (idx != map.endIndex) {
+      got.append(map[idx].value)
+
+      idx = map.index(after: idx)
+    }
+
+    let want = ["one", "five", "twelve", "thirteen"]
+
+    XCTAssertEqual(got, want)
+  }
+
+  func testIndexingEmpty() {
+    XCTAssertEqual(map.startIndex, map.endIndex)
+  }
+
+  func testIndexingOne() {
+    map[111] = "Bilbo"
+
+    let el = map[map.startIndex]
+    XCTAssertEqual(el.key, 111)
+    XCTAssertEqual(el.value, "Bilbo")
+  }
+
   static var allTests = [
     ("testCreateMap", testCreateMap),
     ("testAddItem", testAddItem),
+    ("testOrdering", testOrdering),
+    ("testIndexingEmpty", testIndexingEmpty),
+    ("testIndexingOne", testIndexingOne),
   ]
 }
