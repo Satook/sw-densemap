@@ -1,6 +1,10 @@
 import XCTest
 @testable import densemap
 
+enum TestError: Error {
+case sillyOne(String)
+}
+
 final class densemapTests: XCTestCase {
   var map = DenseMap<UInt16, String>()
 
@@ -39,7 +43,7 @@ final class densemapTests: XCTestCase {
     XCTAssertEqual(map.startIndex, map.endIndex)
   }
 
-  func testIndexingOne() {
+  func testIndexingOne() throws {
     map[111] = "Bilbo"
 
     let el = map[map.startIndex]
