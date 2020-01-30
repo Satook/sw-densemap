@@ -3,7 +3,6 @@
 public struct DenseMap<K: Comparable, V> {
   public typealias Keys = Array<K>
   public typealias Values = Array<V>
-  public typealias Index = Keys.Index
   public typealias Key = K
   public typealias Value = V
 
@@ -19,6 +18,12 @@ public struct DenseMap<K: Comparable, V> {
   public var capacity: Int {
     return keys.capacity
   }
+}
+
+extension DenseMap: RandomAccessCollection, MutableCollection {
+  public typealias Index = Int
+  public typealias Indices = Range<Int>
+  public typealias Iterator = IndexingIterator<DenseMap>
 
   @inlinable
   public var count: Int {

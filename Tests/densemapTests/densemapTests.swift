@@ -26,17 +26,9 @@ final class densemapTests: XCTestCase {
     map[5] = "five"
     map[13] = "thirteen"
 
-    var got = [String]()
-    var idx = map.startIndex
-    while (idx != map.endIndex) {
-      got.append(map[idx].value)
-
-      idx = map.index(after: idx)
-    }
-
     let want = ["one", "five", "twelve", "thirteen"]
 
-    XCTAssertEqual(got, want)
+    XCTAssertEqual(map.values, want)
   }
 
   func testIndexingEmpty() {
