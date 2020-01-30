@@ -1,7 +1,8 @@
 
+@frozen
 public struct DenseMap<K: Comparable, V> {
   public typealias Keys = Array<K>
-  typealias Values = Array<V>
+  public typealias Values = Array<V>
   public typealias Index = Keys.Index
   public typealias Key = K
   public typealias Value = V
