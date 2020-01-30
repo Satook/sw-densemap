@@ -5,7 +5,7 @@ enum TestError: Error {
 case sillyOne(String)
 }
 
-final class densemapTests: XCTestCase {
+final class DensemapTests: XCTestCase {
   var map = DenseMap<UInt16, String>()
 
   func testCreateMap() {
