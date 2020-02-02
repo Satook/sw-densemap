@@ -1,6 +1,5 @@
 
-@frozen
-public struct DenseMap<K: Comparable, V> {
+public class DenseMap<K: Comparable, V> {
   public typealias Keys = Array<K>
   public typealias Values = Array<V>
   public typealias Key = K
@@ -89,7 +88,7 @@ extension DenseMap: RandomAccessCollection, MutableCollection {
     }
   }
 
-  public mutating func insertValue(_ v: Value, forKey k: Key) {
+  public func insertValue(_ v: Value, forKey k: Key) {
     // see if our key is already here
     let searchResult = keys.binarySearch(forElement: k)
 
@@ -102,7 +101,7 @@ extension DenseMap: RandomAccessCollection, MutableCollection {
     }
   }
 
-  public mutating func removeValue(forKey k: Key) {
+  public func removeValue(forKey k: Key) {
     let searchResult = keys.binarySearch(forElement: k)
 
     switch (searchResult) {
@@ -111,6 +110,46 @@ extension DenseMap: RandomAccessCollection, MutableCollection {
       values.remove(at: idx)
     default:
       break
+    }
+  }
+}
+
+/// Merge updates
+public extension DenseMap {
+  /// Merge in a set of updates
+  func mergeSortedUpdates<S: Sequence>(_ updates: S)
+    where
+      S.Element == (Key, Value) {
+
+    // get our first index and then search starting from there onwards
+    var offset = 0
+    for (k, v) in updates {
+      let slice = keys[0..<keys.count]
+
+      // this is the index relative to the base of the slice
+      let relIdx: Int
+      switch slice.binarySearch(forElement: k) {
+      case .hit(let i):
+        relIdx = i
+      case .miss:
+        continue
+      }
+
+      let idx = relIdx + offset
+      offset = idx + 1
+
+      values[idx] = v
+    }
+  }
+
+  func mergeUpdates<S: Sequence>(_ updates: S)
+    where
+      S.Element == (Key, Value) {
+
+    for (k, v) in updates {
+      if let idx = index(forKey: k) {
+        values[idx] = v
+      }
     }
   }
 }
