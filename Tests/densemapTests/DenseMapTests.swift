@@ -13,6 +13,19 @@ final class DensemapTests: XCTestCase {
     XCTAssertGreaterThan(map.capacity, -1)
   }
 
+  func testCreateMapFromSequence() {
+    let dmap: DenseMap<Int, Int> = DenseMap([
+      (1, 1),
+      (2, 2),
+      (12, 12),
+      (14, 14)
+    ])
+
+    XCTAssertEqual(dmap.count, 4)
+    XCTAssertEqual(dmap.keys, [1,2,12,14])
+    XCTAssertEqual(dmap.values, [1,2,12,14])
+  }
+
   func testAddItem() {
     map[1] = "Testing"
 

@@ -6,16 +6,16 @@ public class DenseMap<K: Comparable, V> {
   public typealias Value = V
 
   @usableFromInline
-  var keys = Keys()
+  var _keys = Keys()
 
   @usableFromInline
-  var values = Values()
+  var _values = Values()
 
   public init() {}
 
   @inlinable
   public var capacity: Int {
-    return keys.capacity
+    return _keys.capacity
   }
 }
 
@@ -25,32 +25,42 @@ extension DenseMap: RandomAccessCollection, MutableCollection {
   public typealias Iterator = IndexingIterator<DenseMap>
 
   @inlinable
+  public var keys: [Key] {
+    _keys
+  }
+
+  @inlinable
+  public var values: [Value] {
+    _values
+  }
+
+  @inlinable
   public var count: Int {
-    return keys.count
+    _keys.count
   }
 
   @inlinable
   public var startIndex: Index {
-    keys.startIndex
+    _keys.startIndex
   }
 
   @inlinable
   public var endIndex: Index {
-    keys.endIndex
+    _keys.endIndex
   }
 
   @inlinable
   public func index(after idx: Index) -> Index {
-    keys.index(after: idx)
+    _keys.index(after: idx)
   }
 
   @inlinable
   public func distance(from: Index, to: Index) -> Int {
-    keys.distance(from: from, to: to)
+    _keys.distance(from: from, to: to)
   }
 
   public func index(forKey k: Key) -> Index? {
-    switch (keys.binarySearch(forElement: k)) {
+    switch (_keys.binarySearch(forElement: k)) {
     case .hit(let idx):
       return idx
     case .miss:
@@ -61,20 +71,20 @@ extension DenseMap: RandomAccessCollection, MutableCollection {
   @inlinable
   public subscript(idx: Index) -> (key: Key, value: Value) {
     get {
-      return (key: keys[idx], value: values[idx])
+      return (key: _keys[idx], value: _values[idx])
     }
     set (v) {
-      values[idx] = v.value
+      _values[idx] = v.value
     }
   }
 
   public subscript(k: Key) -> Value? {
     get {
-      let searchResult = keys.binarySearch(forElement: k)
+      let searchResult = _keys.binarySearch(forElement: k)
 
       switch (searchResult) {
       case .hit(let idx):
-        return values[idx]
+        return _values[idx]
       case .miss:
         return nil
       }
@@ -90,26 +100,37 @@ extension DenseMap: RandomAccessCollection, MutableCollection {
 
   public func insertValue(_ v: Value, forKey k: Key) {
     // see if our key is already here
-    let searchResult = keys.binarySearch(forElement: k)
+    let searchResult = _keys.binarySearch(forElement: k)
 
     switch (searchResult) {
     case .hit(let idx):
-      values[idx] = v
+      _values[idx] = v
     case .miss(let idx):
-      keys.insert(k, at: idx)
-      values.insert(v, at: idx)
+      _keys.insert(k, at: idx)
+      _values.insert(v, at: idx)
     }
   }
 
   public func removeValue(forKey k: Key) {
-    let searchResult = keys.binarySearch(forElement: k)
+    let searchResult = _keys.binarySearch(forElement: k)
 
     switch (searchResult) {
     case .hit(let idx):
-      keys.remove(at: idx)
-      values.remove(at: idx)
+      _keys.remove(at: idx)
+      _values.remove(at: idx)
     default:
       break
+    }
+  }
+}
+
+/// constructors
+public extension DenseMap {
+  convenience init<S: Sequence>(_ s: S) where S.Element == (Key, Value) {
+    self.init()
+
+    for (k, v) in s {
+      self[k] = v
     }
   }
 }
@@ -124,7 +145,7 @@ public extension DenseMap {
     // get our first index and then search starting from there onwards
     var offset = 0
     for (k, v) in updates {
-      let slice = keys[0..<keys.count]
+      let slice = _keys[0..<_keys.count]
 
       // this is the index relative to the base of the slice
       let relIdx: Int
@@ -138,7 +159,7 @@ public extension DenseMap {
       let idx = relIdx + offset
       offset = idx + 1
 
-      values[idx] = v
+      _values[idx] = v
     }
   }
 
@@ -148,7 +169,7 @@ public extension DenseMap {
 
     for (k, v) in updates {
       if let idx = index(forKey: k) {
-        values[idx] = v
+        _values[idx] = v
       }
     }
   }
